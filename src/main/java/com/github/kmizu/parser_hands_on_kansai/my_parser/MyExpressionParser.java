@@ -5,8 +5,7 @@ import com.github.kmizu.parser_hands_on_kansai.ParseFailure;
 import com.github.kmizu.parser_hands_on_kansai.expression.AbstractExpressionParser;
 import com.github.kmizu.parser_hands_on_kansai.expression.ExpressionNode;
 import com.github.kmizu.parser_hands_on_kansai.expression.ExpressionNode.ValueNode;
-
-import javax.security.auth.login.FailedLoginException;
+import static com.github.kmizu.parser_hands_on_kansai.my_parser.util.ParserUtil.checkZeroStart;
 
 public class MyExpressionParser extends AbstractExpressionParser{
     private String input;
@@ -77,15 +76,10 @@ public class MyExpressionParser extends AbstractExpressionParser{
     private int integer() {
         int result = (checkNumChar() - '0');
         if(result == 0) {
-            if(position >= input.length()){
-                return result;
-            } else {
-                char ch = input.charAt(position);
-                if('0' <= ch && ch <= '9') {
-                    throw new ParseFailure("if number starts with 0, it cannot be follow by any digit");
-                }
-                return result;
+            if (!checkZeroStart(input)) {
+                throw new ParseFailure("first char is zero");
             }
+            return result;
         }
         while(true) {
             try {
